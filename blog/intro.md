@@ -2,9 +2,7 @@
 date: 2026-08-24
 title: Building appy.fyi
 tags: [appy.fyi, google_play]
-image: 
-    vertical: out/GooglePlay-4-5.png
-    horizontal: out/GooglePlay-21-9.png
+image: out/GooglePlay-191-100.png
 video: out/GooglePlay-4-5.mp4
 # check my writing, fix and improve
 abstract: |

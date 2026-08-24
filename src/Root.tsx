@@ -52,6 +52,14 @@ export const RemotionRoot: React.FC = () => {
         height={1350}
       />
       <Composition
+        id="GooglePlay-191-100"
+        component={GooglePlay}
+        durationInFrames={240}
+        fps={30}
+        width={1910}
+        height={1000}
+      />
+      <Composition
         id="Outro"
         component={Outro}
         durationInFrames={180}
