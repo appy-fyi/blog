@@ -3,6 +3,7 @@ import {
   CalculateMetadataFunction,
   Composition,
   Interactive,
+  interpolate,
   useCurrentFrame,
   useVideoConfig
 } from "remotion"
@@ -18,7 +19,7 @@ export const MyComposition = () => {
     <Composition
       id="Terminal"
       component={Terminal}
-      durationInFrames={90}
+      durationInFrames={150}
       fps={30}
       width={1080}
       height={1350}
@@ -32,6 +33,28 @@ export const Terminal: React.FC<Props> = () => {
   const { fps } = useVideoConfig()
 
   const cursorVisible = Math.floor(frame / (fps / 2)) % 2 === 0
+
+  const command = "/appy.fyi"
+  const framesPerChar = 4
+  const charsTyped = Math.min(
+    command.length,
+    Math.max(0, Math.floor(frame / framesPerChar))
+  )
+  const typedText = command.slice(0, charsTyped)
+
+  const suggestions = [
+    { name: "/appy.fyi", desc: "Build something amazing" },
+    { name: "/appy.fyi:draft", desc: "Draft something amazing" },
+    { name: "/appy.fyi:publish", desc: "Publish something amazing" },
+  ]
+
+  const popupAppearFrame = framesPerChar
+  const popupProgress = interpolate(
+    frame,
+    [popupAppearFrame, popupAppearFrame + 10],
+    [0, 1],
+    { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
+  )
 
   return (
     <AbsoluteFill
@@ -135,6 +158,39 @@ export const Terminal: React.FC<Props> = () => {
           />
 
           <div style={{ marginTop: "auto" }}>
+            <div
+              style={{
+                opacity: popupProgress,
+                transform: `translateY(${(1 - popupProgress) * 12}px)`,
+                marginBottom: 8,
+              }}
+            >
+              {suggestions.map((suggestion, index) => (
+                <div
+                  key={suggestion.name}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    padding: "10px 16px",
+                    borderRadius: 8,
+                    backgroundColor:
+                      index === 0 ? "#2a2d38" : "transparent",
+                  }}
+                >
+                  <span
+                    style={{
+                      color: index === 0 ? "#e5a663" : "#9aa0ab",
+                    }}
+                  >
+                    {suggestion.name}
+                  </span>
+                  <span style={{ color: "#5c6270", fontSize: 20 }}>
+                    {suggestion.desc}
+                  </span>
+                </div>
+              ))}
+            </div>
             <div style={{ height: 2, backgroundColor: "#ffffff" }} />
             <div
               style={{
@@ -144,9 +200,8 @@ export const Terminal: React.FC<Props> = () => {
               }}
             >
               <span style={{ color: "#27c93f" }}>{"❯"}</span>
-              {cursorVisible && (
-                <span style={{ marginLeft: 16 }}>{"█"}</span>
-              )}
+              <span style={{ marginLeft: 16 }}>{typedText}</span>
+              {cursorVisible && <span>{"█"}</span>}
             </div>
             <div style={{ height: 2, backgroundColor: "#ffffff" }} />
             <div

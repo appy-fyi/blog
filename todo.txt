@@ -2,6 +2,9 @@ This is a remotion based blog for https://appy.fyi
 The appy.fyi main project is at ~/Work/appy.fyi
 
 TODO:
-
+    Animation:
+        - the user enters the command (suggestions disappear)
+        - use these for animation: ⠋ ⠙ ⠹ ⠸ ⠼ ⠴ ⠦ ⠧ ⠇ ⠏ with the text "appyfying...
+        - animate the claude code logo, he is in love with appy.fyi (the right logo) and send her pixelated hearts (the left logo)
 Done:
     Create a simple static remotion animation of a terminal with the claude code logo (claude.svg)
