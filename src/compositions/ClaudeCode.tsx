@@ -3,6 +3,7 @@ import {
   CalculateMetadataFunction,
   interpolate,
   useCurrentFrame,
+  useVideoConfig,
 } from "remotion"
 
 type Props = {}
@@ -46,6 +47,14 @@ const BAR_GROW_DURATION = 22
 const BAR_BASE_HEIGHT = 30
 const BAR_MAX_HEIGHT = 90
 
+// Original design was authored for a 1080x1350 canvas; scale every pixel
+// value below by min(width, height) / 1080 so the same layout adapts to
+// other composition sizes (matches GooglePlay.tsx's approach).
+const ROW_WIDTH = 780
+const ICON_SIZE = 192
+const HEART_SIZE = 64
+const HEART_ARC_HEIGHT = 32
+
 const LAST_HEART_LAND =
   (HEART_COUNT - 1) * HEART_STAGGER + HEART_TRAVEL
 const BAR_GROW_START = LAST_HEART_LAND + PAUSE_AFTER_HEARTS
@@ -53,6 +62,8 @@ const BAR_GROW_END = BAR_GROW_START + BAR_GROW_DURATION
 
 export const ClaudeCode: React.FC<Props> = () => {
   const frame = useCurrentFrame()
+  const { width, height } = useVideoConfig()
+  const scale = Math.min(width, height) / 1080
 
   const heartbeat = 1 + 0.06 * Math.max(0, Math.sin((frame / 10) * Math.PI))
 
@@ -61,16 +72,16 @@ export const ClaudeCode: React.FC<Props> = () => {
     if (frame < start || frame >= start + HEART_TRAVEL) return []
     const t = (frame - start) / HEART_TRAVEL
     const x = interpolate(t, [0, 1], [12, 88])
-    const y = -Math.sin(t * Math.PI) * 32
+    const y = -Math.sin(t * Math.PI) * HEART_ARC_HEIGHT * scale
     const opacity = interpolate(t, [0, 0.15, 0.85, 1], [0, 1, 1, 0], {
       extrapolateLeft: "clamp",
       extrapolateRight: "clamp",
     })
-    const scale = interpolate(t, [0, 0.15, 1], [0.5, 1, 0.85], {
+    const heartScale = interpolate(t, [0, 0.15, 1], [0.5, 1, 0.85], {
       extrapolateLeft: "clamp",
       extrapolateRight: "clamp",
     })
-    return [{ key: `heart-${i}`, x, y, opacity, scale }]
+    return [{ key: `heart-${i}`, x, y, opacity, scale: heartScale }]
   })
 
   const orangeBarHeight = interpolate(
@@ -95,12 +106,12 @@ export const ClaudeCode: React.FC<Props> = () => {
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          width: 780,
+          width: ROW_WIDTH * scale,
         }}
       >
         {/* CLAUDE CODE LOGO */}
         <svg
-          height="12em"
+          height={ICON_SIZE * scale}
           viewBox="0 0 24 24"
           style={{
             transform: `scale(${heartbeat})`,
@@ -128,12 +139,12 @@ export const ClaudeCode: React.FC<Props> = () => {
               opacity: heart.opacity,
             }}
           >
-            <PixelHeart size={64} />
+            <PixelHeart size={HEART_SIZE * scale} />
           </div>
         ))}
 
         {/* APPY.FYI LOGO */}
-        <svg height="12em" viewBox="0 0 100 100">
+        <svg height={ICON_SIZE * scale} viewBox="0 0 100 100">
           <title>appy.fyi</title>
           <g transform="translate(0, 100) scale(1, -1)">
             <rect x="6" y="5" width="16" height="50" rx="7" fill="#0F9D58" />

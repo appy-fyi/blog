@@ -20,6 +20,15 @@ export const RemotionRoot: React.FC = () => {
         calculateMetadata={terminalMetadata}
       />
       <Composition
+        id="ClaudeCode-191-100"
+        component={ClaudeCode}
+        durationInFrames={240}
+        fps={30}
+        width={1910}
+        height={1000}
+        calculateMetadata={terminalMetadata}
+      />
+      <Composition
         id="GooglePlay-4-5"
         component={GooglePlay}
         durationInFrames={240}
