@@ -19,12 +19,39 @@ export const MyComposition = () => {
     <Composition
       id="Terminal"
       component={Terminal}
-      durationInFrames={150}
+      durationInFrames={240}
       fps={30}
       width={1080}
       height={1350}
       calculateMetadata={calculateMetadata}
     />
+  )
+}
+
+const HEART_PATTERN = [
+  ".XX.XX.",
+  "XXXXXXX",
+  "XXXXXXX",
+  ".XXXXX.",
+  "..XXX..",
+  "...X...",
+]
+
+type PixelHeartProps = { size: number; color?: string }
+
+const PixelHeart: React.FC<PixelHeartProps> = ({ size, color = "#ff6b81" }) => {
+  return (
+    <svg width={size} height={(size * 6) / 7} viewBox="0 0 7 6">
+      {HEART_PATTERN.flatMap((row, y) =>
+        row
+          .split("")
+          .map((cell, x) =>
+            cell === "X" ? (
+              <rect key={`${x}-${y}`} x={x} y={y} width={1} height={1} fill={color} />
+            ) : null
+          )
+      )}
+    </svg>
   )
 }
 
@@ -49,12 +76,61 @@ export const Terminal: React.FC<Props> = () => {
   ]
 
   const popupAppearFrame = framesPerChar
+  const typeEndFrame = command.length * framesPerChar
+  const popupDisappearFrame = typeEndFrame + 10
   const popupProgress = interpolate(
     frame,
-    [popupAppearFrame, popupAppearFrame + 10],
+    [
+      popupAppearFrame,
+      popupAppearFrame + 10,
+      popupDisappearFrame,
+      popupDisappearFrame + 10,
+    ],
+    [0, 1, 1, 0],
+    { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
+  )
+
+  const selectFrame = popupDisappearFrame + 10
+
+  const spinnerFrames = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
+  const spinnerSpeed = 3
+  const spinnerIndex =
+    Math.floor(Math.max(0, frame - selectFrame) / spinnerSpeed) %
+    spinnerFrames.length
+  const appyfyOpacity = interpolate(
+    frame,
+    [selectFrame, selectFrame + 10],
     [0, 1],
     { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
   )
+
+  const loveFrame = Math.max(0, frame - selectFrame)
+  const heartbeat =
+    frame >= selectFrame
+      ? 1 + 0.06 * Math.max(0, Math.sin((loveFrame / 10) * Math.PI))
+      : 1
+
+  const heartCount = 3
+  const heartPeriod = 60
+  const heartTravel = 42
+  const hearts = Array.from({ length: heartCount }).flatMap((_, i) => {
+    const start = selectFrame + i * (heartPeriod / heartCount)
+    if (frame < start) return []
+    const loopFrame = (frame - start) % heartPeriod
+    if (loopFrame >= heartTravel) return []
+    const t = loopFrame / heartTravel
+    const x = interpolate(t, [0, 1], [20, 78])
+    const y = -Math.sin(t * Math.PI) * 24
+    const opacity = interpolate(t, [0, 0.15, 0.85, 1], [0, 1, 1, 0], {
+      extrapolateLeft: "clamp",
+      extrapolateRight: "clamp",
+    })
+    const scale = interpolate(t, [0, 0.15, 1], [0.5, 1, 0.85], {
+      extrapolateLeft: "clamp",
+      extrapolateRight: "clamp",
+    })
+    return [{ key: `heart-${i}`, x, y, opacity, scale }]
+  })
 
   return (
     <AbsoluteFill
@@ -121,13 +197,21 @@ export const Terminal: React.FC<Props> = () => {
         >
           <div
             style={{
+              position: "relative",
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",
             }}
           >
             {/* CLAUDE CODE LOGO */}
-            <svg height="7em" viewBox="0 0 24 24">
+            <svg
+              height="7em"
+              viewBox="0 0 24 24"
+              style={{
+                transform: `scale(${heartbeat})`,
+                transformOrigin: "center",
+              }}
+            >
               <title>Claude Code</title>
               <path
                 clipRule="evenodd"
@@ -136,6 +220,22 @@ export const Terminal: React.FC<Props> = () => {
                 fillRule="evenodd"
               ></path>
             </svg>
+
+            {/* PIXELATED HEARTS FROM CLAUDE TO APPY.FYI */}
+            {hearts.map((heart) => (
+              <div
+                key={heart.key}
+                style={{
+                  position: "absolute",
+                  left: `${heart.x}%`,
+                  top: `calc(50% + ${heart.y}px)`,
+                  transform: `translate(-50%, -50%) scale(${heart.scale})`,
+                  opacity: heart.opacity,
+                }}
+              >
+                <PixelHeart size={52} />
+              </div>
+            ))}
 
             {/* APPY.FYI LOGO */}
             <svg height="7em" viewBox="0 0 100 100">
@@ -156,6 +256,22 @@ export const Terminal: React.FC<Props> = () => {
               margin: "40px 0",
             }}
           />
+
+          <div
+            style={{
+              opacity: appyfyOpacity,
+              display: "flex",
+              alignItems: "center",
+              padding: "10px 16px",
+            }}
+          >
+            <span style={{ color: "#e5a663" }}>
+              {spinnerFrames[spinnerIndex]}
+            </span>
+            <span style={{ marginLeft: 12, color: "#9aa0ab" }}>
+              {"appyfying..."}
+            </span>
+          </div>
 
           <div style={{ marginTop: "auto" }}>
             <div
