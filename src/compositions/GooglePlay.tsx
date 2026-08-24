@@ -4,6 +4,7 @@ import {
   interpolate,
   staticFile,
   useCurrentFrame,
+  useVideoConfig,
 } from "remotion";
 
 type Props = {};
@@ -32,25 +33,41 @@ const cubicPoint = (
   };
 };
 
-const PLAY: Point = { x: 260, y: 300 };
-const OPENAI: Point = { x: 540, y: 675 };
-const APPY: Point = { x: 820, y: 1050 };
+// Fractions of the composition's width/height, derived from the original
+// 1080x1350 design, so the same snake-shaped layout adapts to any aspect ratio.
+const PLAY_F: Point = { x: 260 / 1080, y: 300 / 1350 };
+const OPENAI_F: Point = { x: 540 / 1080, y: 675 / 1350 };
+const APPY_F: Point = { x: 820 / 1080, y: 1050 / 1350 };
+const SEG_A_P1_F: Point = { x: 620 / 1080, y: 240 / 1350 };
+const SEG_A_P2_F: Point = { x: 180 / 1080, y: 610 / 1350 };
+const SEG_B_P1_F: Point = { x: 900 / 1080, y: 740 / 1350 };
+const SEG_B_P2_F: Point = { x: 460 / 1080, y: 1010 / 1350 };
 
 export const GooglePlay: React.FC<Props> = () => {
   const frame = useCurrentFrame();
+  const { width, height } = useVideoConfig();
 
-  const wiggle = Math.sin(frame / 24) * 18;
+  // Icon/stroke sizes were tuned for a 1080-wide-or-tall canvas; scale them
+  // to keep proportions consistent across different composition sizes.
+  const scale = Math.min(width, height) / 1080;
+  const toPoint = (f: Point): Point => ({ x: f.x * width, y: f.y * height });
+
+  const PLAY = toPoint(PLAY_F);
+  const OPENAI = toPoint(OPENAI_F);
+  const APPY = toPoint(APPY_F);
+
+  const wiggle = Math.sin(frame / 24) * 18 * scale;
 
   const segA = {
     p0: PLAY,
-    p1: { x: 620, y: 240 + wiggle },
-    p2: { x: 180, y: 610 - wiggle },
+    p1: { ...toPoint(SEG_A_P1_F), y: toPoint(SEG_A_P1_F).y + wiggle },
+    p2: { ...toPoint(SEG_A_P2_F), y: toPoint(SEG_A_P2_F).y - wiggle },
     p3: OPENAI,
   };
   const segB = {
     p0: OPENAI,
-    p1: { x: 900, y: 740 - wiggle },
-    p2: { x: 460, y: 1010 + wiggle },
+    p1: { ...toPoint(SEG_B_P1_F), y: toPoint(SEG_B_P1_F).y - wiggle },
+    p2: { ...toPoint(SEG_B_P2_F), y: toPoint(SEG_B_P2_F).y + wiggle },
     p3: APPY,
   };
 
@@ -110,16 +127,16 @@ export const GooglePlay: React.FC<Props> = () => {
       <svg
         width="100%"
         height="100%"
-        viewBox="0 0 1080 1350"
+        viewBox={`0 0 ${width} ${height}`}
         style={{ position: "absolute", inset: 0 }}
       >
         <path
           d={pathD}
           fill="none"
           stroke="#4b5160"
-          strokeWidth={5}
+          strokeWidth={5 * scale}
           strokeLinecap="round"
-          strokeDasharray="2 22"
+          strokeDasharray={`${2 * scale} ${22 * scale}`}
           strokeDashoffset={dashOffset}
           pathLength={1000}
           opacity={pathOpacity}
@@ -129,7 +146,7 @@ export const GooglePlay: React.FC<Props> = () => {
             key={particle.key}
             cx={particle.x}
             cy={particle.y}
-            r={9}
+            r={9 * scale}
             fill="#e5a663"
             opacity={particle.opacity}
           />
@@ -141,8 +158,8 @@ export const GooglePlay: React.FC<Props> = () => {
           position: "absolute",
           left: PLAY.x,
           top: PLAY.y,
-          width: 170,
-          height: 170,
+          width: 170 * scale,
+          height: 170 * scale,
           transform: `translate(-50%, -50%) scale(${playScale})`,
           opacity: playEntrance,
         }}
@@ -158,8 +175,8 @@ export const GooglePlay: React.FC<Props> = () => {
           position: "absolute",
           left: OPENAI.x,
           top: OPENAI.y,
-          width: 190,
-          height: 190,
+          width: 190 * scale,
+          height: 190 * scale,
           transform: `translate(-50%, -50%) scale(${openaiScale}) rotate(${openaiRotation}deg)`,
           opacity: openaiEntrance,
         }}
@@ -175,8 +192,8 @@ export const GooglePlay: React.FC<Props> = () => {
           position: "absolute",
           left: APPY.x,
           top: APPY.y,
-          width: 170,
-          height: 170,
+          width: 170 * scale,
+          height: 170 * scale,
           transform: `translate(-50%, -50%) scale(${appyScale})`,
           opacity: appyEntrance,
         }}
