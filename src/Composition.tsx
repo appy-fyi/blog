@@ -152,12 +152,29 @@ export const Terminal: React.FC<Props> = () => {
             <div
               style={{
                 marginTop: 16,
-                fontSize: 18,
+                color: "#e6e6e6",
+              }}
+            >
+              <span>{"Sonnet 6.7"}</span>
+              <span style={{ color: "#7a7f8c" }}>{" | ctx "}</span>
+              <span style={{ color: "#e5a663" }}>{"0%"}</span>
+              <span style={{ color: "#7a7f8c" }}>{" | tok "}</span>
+              <span>{"0k"}</span>
+              <span style={{ color: "#7a7f8c" }}>{" | "}</span>
+              <span>{"$0.00"}</span>
+              <span style={{ color: "#7a7f8c" }}>{" | 5h "}</span>
+              <span style={{ color: "#27c93f" }}>{"7%"}</span>
+              <span style={{ color: "#7a7f8c" }}>{" | "}</span>
+              <span>{"main"}</span>
+            </div>
+            <div
+              style={{
+                marginTop: 6,
                 color: "#7a7f8c",
               }}
             >
+              {"▸▸ auto mode on (shift+tab to cycle) · ← for agents"}
             </div>
-            <span>Sonnet 6.7 | ctx 0% | tok 0k | $0.00 | 5h 7% | main</span>
           </div>
         </div>
       </Interactive.Div>
