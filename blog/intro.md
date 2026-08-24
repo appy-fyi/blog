@@ -2,8 +2,8 @@
 date: 2026-08-24
 title: Building appy.fyi
 tags: [appy.fyi, google_play]
-image:
-video:
+image: img/intro.jpg
+video: out/GooglePlay.mp4
 # check my writing, fix and improve
 abstract: |
      I wasn't sure what to build, so I started an experiment: appy.fyi.
