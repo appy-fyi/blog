@@ -38,19 +38,26 @@ const PixelHeart: React.FC<PixelHeartProps> = ({ size, color = "#ff6b81" }) => {
   )
 }
 
-const HEART_PERIOD = 55
+const HEART_COUNT = 3
+const HEART_STAGGER = 14
 const HEART_TRAVEL = 34
+const PAUSE_AFTER_HEARTS = 26
+const BAR_GROW_DURATION = 22
 const BAR_BASE_HEIGHT = 30
-const BAR_GROWTH_PER_HEART = 15
 const BAR_MAX_HEIGHT = 90
+
+const LAST_HEART_LAND =
+  (HEART_COUNT - 1) * HEART_STAGGER + HEART_TRAVEL
+const BAR_GROW_START = LAST_HEART_LAND + PAUSE_AFTER_HEARTS
+const BAR_GROW_END = BAR_GROW_START + BAR_GROW_DURATION
 
 export const ClaudeCode: React.FC<Props> = () => {
   const frame = useCurrentFrame()
 
   const heartbeat = 1 + 0.06 * Math.max(0, Math.sin((frame / 10) * Math.PI))
 
-  const hearts = Array.from({ length: 6 }).flatMap((_, i) => {
-    const start = i * HEART_PERIOD
+  const hearts = Array.from({ length: HEART_COUNT }).flatMap((_, i) => {
+    const start = i * HEART_STAGGER
     if (frame < start || frame >= start + HEART_TRAVEL) return []
     const t = (frame - start) / HEART_TRAVEL
     const x = interpolate(t, [0, 1], [12, 88])
@@ -66,25 +73,12 @@ export const ClaudeCode: React.FC<Props> = () => {
     return [{ key: `heart-${i}`, x, y, opacity, scale }]
   })
 
-  const heartsLanded =
-    frame < HEART_TRAVEL
-      ? 0
-      : Math.floor((frame - HEART_TRAVEL) / HEART_PERIOD) + 1
-  const orangeBarHeight = Math.min(
-    BAR_MAX_HEIGHT,
-    BAR_BASE_HEIGHT + heartsLanded * BAR_GROWTH_PER_HEART
+  const orangeBarHeight = interpolate(
+    frame,
+    [BAR_GROW_START, BAR_GROW_START + BAR_GROW_DURATION * 0.65, BAR_GROW_END],
+    [BAR_BASE_HEIGHT, BAR_MAX_HEIGHT * 1.08, BAR_MAX_HEIGHT],
+    { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
   )
-
-  const lastLandingFrame =
-    heartsLanded > 0 ? (heartsLanded - 1) * HEART_PERIOD + HEART_TRAVEL : 0
-  const framesSinceLanding = frame - lastLandingFrame
-  const barBounce =
-    heartsLanded > 0 && orangeBarHeight < BAR_MAX_HEIGHT
-      ? interpolate(framesSinceLanding, [0, 4, 14], [1, 1.12, 1], {
-          extrapolateLeft: "clamp",
-          extrapolateRight: "clamp",
-        })
-      : 1
 
   return (
     <AbsoluteFill
@@ -139,14 +133,7 @@ export const ClaudeCode: React.FC<Props> = () => {
         ))}
 
         {/* APPY.FYI LOGO */}
-        <svg
-          height="12em"
-          viewBox="0 0 100 100"
-          style={{
-            transform: `scale(${barBounce})`,
-            transformOrigin: "center bottom",
-          }}
-        >
+        <svg height="12em" viewBox="0 0 100 100">
           <title>appy.fyi</title>
           <g transform="translate(0, 100) scale(1, -1)">
             <rect x="6" y="5" width="16" height="50" rx="7" fill="#0F9D58" />
