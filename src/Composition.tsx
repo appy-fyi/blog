@@ -67,7 +67,6 @@ export const Terminal: React.FC<Props> = () => {
     command.length,
     Math.max(0, Math.floor(frame / framesPerChar))
   )
-  const typedText = command.slice(0, charsTyped)
 
   const suggestions = [
     { name: "/appy.fyi", desc: "Build something amazing" },
@@ -91,6 +90,7 @@ export const Terminal: React.FC<Props> = () => {
   )
 
   const selectFrame = popupDisappearFrame + 10
+  const typedText = frame < selectFrame ? command.slice(0, charsTyped) : ""
 
   const spinnerFrames = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
   const spinnerSpeed = 3
