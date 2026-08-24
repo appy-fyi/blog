@@ -1,12 +1,13 @@
 ---
 name: blog-post
-description: Turn a blog/*.md file that has only frontmatter into a complete short blog post, and make sure its 4:5 video and 1.91:1 image renders exist in out/.
+description: Turn a blog/*.md file that has only frontmatter into a complete short blog post, polish its abstract into a LinkedIn-ready caption, and make sure its 4:5 video and 1.91:1 image renders exist in out/.
 ---
 
 # Blog post
 
 Fleshes out a stub post in `blog/` — a file that currently has only YAML
-frontmatter and no body — into a short, finished blog post, and makes sure
+frontmatter and no body — into a short, finished blog post, polishes the
+`abstract` field into a caption fit for posting on LinkedIn, and makes sure
 the video/image it references have actually been rendered.
 
 ## 0. Pick the target file
@@ -24,11 +25,14 @@ Expected fields (see `blog/intro.md` for a finished example):
 - `date`, `title`, `tags`
 - `image` — path like `out/<Base>-191-100.png`
 - `video` — path like `out/<Base>-4-5.mp4`
-- `abstract` — a multi-line YAML block (`|`) that is the thesis/seed for the post
+- `abstract` — a multi-line YAML block (`|`) that is the thesis/seed for the
+  post **and** doubles as its LinkedIn caption — see step 4, which rewrites
+  it
 
-Leave the frontmatter exactly as written, including any stray comment line
-inside it (e.g. `# check my writing, fix and improve`) — that's the user's
-own note to self, not something this skill adds or removes.
+Leave the rest of the frontmatter exactly as written, including any stray
+comment line inside it (e.g. `# check my writing, fix and improve`) for now
+— step 4 is what acts on that comment. Don't touch `date`, `title`, `tags`,
+`image`, or `video`.
 
 ## 2. Work out what needs to be rendered
 
@@ -103,7 +107,50 @@ frontmatter `abstract` as the thesis, not gospel — if it asserts something
 you can't verify in the appy.fyi project (or that looks stale/wrong), don't
 silently soften or embellish it: ask the user.
 
-## 4. Write the body
+## 4. Fix the abstract and make it LinkedIn-ready
+
+The `abstract` is the seed for the post body (step 5) but it's also what
+gets posted to LinkedIn as the caption, so it needs its own pass, separate
+from the long-form body.
+
+Rewrite it whether or not the `# check my writing, fix and improve` comment
+is present — treat that comment as an explicit ask for a rewrite, not just a
+proofread, when it's there. Using what you learned in step 3:
+
+- Fix anything genuinely wrong: grammar, awkward phrasing, and any claim
+  that's vague, stale, or unsupported by the appy.fyi project. Don't
+  invent new claims the abstract didn't already make — tighten and correct,
+  don't pad.
+- Shape it for LinkedIn specifically:
+  - **Hook first.** LinkedIn truncates behind "…see more" after roughly the
+    first 140 characters — the opening line or two must stand alone and
+    earn the click.
+  - **Plain text only.** LinkedIn doesn't render Markdown — no `##`,
+    `**bold**`, or `[text](url)` links. If a URL matters, spell it out
+    (e.g. `appy.fyi/feed`) rather than markdown-linking it.
+  - **Short lines, blank line between them.** Dense paragraphs read poorly
+    in LinkedIn's feed; break it up the way the original abstracts already
+    do.
+  - **End with a hook for engagement** — a direct question or invite to
+    comment, not just a trailing statement.
+  - **3-5 relevant hashtags on their own line at the end**, derived from the
+    post's `tags` field and general themes (e.g. `#buildinpublic`,
+    `#indiehacker`).
+  - **Length:** well under LinkedIn's 3,000-character cap — aim for roughly
+    600-1,500 characters so it's scannable in the feed.
+  - Keep the same first-person, direct voice as the rest of the post.
+
+Replace the `abstract:` block's content in the frontmatter with the revised
+text, keeping the same YAML `|` block style and indentation as the
+original. Once you've acted on it, remove the
+`# check my writing, fix and improve` comment line — it's a resolved
+instruction now, not something to leave dangling for next time.
+
+If the original abstract already reads well, is factually solid, and is
+already shaped for LinkedIn (short lines, a hook, no markdown), light edits
+are fine — don't rewrite for the sake of rewriting.
+
+## 5. Write the body
 
 Match the voice, structure, and length of `blog/intro.md`: first person,
 short paragraphs, a small number of `##` sections, no filler, ends with a
@@ -112,10 +159,12 @@ post is about one). This is a **short** post — a few sections is enough, not
 an exhaustive writeup.
 
 Append the body directly below the closing `---` of the frontmatter (there
-should already be one blank line there). Don't touch the frontmatter.
+should already be one blank line there). Don't touch the frontmatter beyond
+the `abstract` edit already made in step 4.
 
-## 5. Report
+## 6. Report
 
-Summarize what was rendered (or already existed) and confirm the post body
-was written. If anything was ambiguous enough to ask about along the way,
+Summarize what was rendered (or already existed), confirm the post body was
+written, and show how the abstract changed (or note that it was left mostly
+as-is and why). If anything was ambiguous enough to ask about along the way,
 that question — not a guess — is the point of this skill.
