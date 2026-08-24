@@ -134,11 +134,30 @@ export const Terminal: React.FC<Props> = () => {
             }}
           />
 
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <span style={{ color: "#27c93f" }}>{"~"}</span>
-            {cursorVisible && (
-              <span style={{ marginLeft: 16 }}>{"█"}</span>
-            )}
+          <div style={{ marginTop: "auto" }}>
+            <div style={{ height: 2, backgroundColor: "#ffffff" }} />
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                padding: "16px 0",
+              }}
+            >
+              <span style={{ color: "#27c93f" }}>{"❯"}</span>
+              {cursorVisible && (
+                <span style={{ marginLeft: 16 }}>{"█"}</span>
+              )}
+            </div>
+            <div style={{ height: 2, backgroundColor: "#ffffff" }} />
+            <div
+              style={{
+                marginTop: 16,
+                fontSize: 18,
+                color: "#7a7f8c",
+              }}
+            >
+            </div>
+            <span>Sonnet 6.7 | ctx 0% | tok 0k | $0.00 | 5h 7% | main</span>
           </div>
         </div>
       </Interactive.Div>
