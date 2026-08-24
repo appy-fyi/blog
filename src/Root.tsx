@@ -1,47 +1,23 @@
-import "./index.css";
-import { Composition } from "remotion";
+import { Composition } from "remotion"
 import {
-  Terminal,
+  ClaudeCode,
   calculateMetadata as terminalMetadata,
-} from "./compositions/Terminal";
-import { GooglePlay } from "./compositions/GooglePlay";
-import { Outro } from "./compositions/Outro";
+} from "./compositions/ClaudeCode"
+import { GooglePlay } from "./compositions/GooglePlay"
+import { Outro } from "./compositions/Outro"
+import "./index.css"
 
 export const RemotionRoot: React.FC = () => {
   return (
     <>
       <Composition
-        id="Terminal"
-        component={Terminal}
+        id="ClaudeCode-4-5"
+        component={ClaudeCode}
         durationInFrames={240}
         fps={30}
         width={1080}
         height={1350}
         calculateMetadata={terminalMetadata}
-      />
-      <Composition
-        id="GooglePlay"
-        component={GooglePlay}
-        durationInFrames={240}
-        fps={30}
-        width={1080}
-        height={1350}
-      />
-      <Composition
-        id="GooglePlay-16-9"
-        component={GooglePlay}
-        durationInFrames={240}
-        fps={30}
-        width={1920}
-        height={1080}
-      />
-      <Composition
-        id="GooglePlay-21-9"
-        component={GooglePlay}
-        durationInFrames={240}
-        fps={30}
-        width={2100}
-        height={900}
       />
       <Composition
         id="GooglePlay-4-5"
@@ -68,5 +44,5 @@ export const RemotionRoot: React.FC = () => {
         height={1350}
       />
     </>
-  );
-};
+  )
+}
