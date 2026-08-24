@@ -5,6 +5,7 @@ import {
   calculateMetadata as terminalMetadata,
 } from "./compositions/Terminal";
 import { GooglePlay } from "./compositions/GooglePlay";
+import { Outro } from "./compositions/Outro";
 
 export const RemotionRoot: React.FC = () => {
   return (
@@ -22,6 +23,14 @@ export const RemotionRoot: React.FC = () => {
         id="GooglePlay"
         component={GooglePlay}
         durationInFrames={240}
+        fps={30}
+        width={1080}
+        height={1350}
+      />
+      <Composition
+        id="Outro"
+        component={Outro}
+        durationInFrames={180}
         fps={30}
         width={1080}
         height={1350}
