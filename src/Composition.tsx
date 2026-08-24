@@ -132,6 +132,14 @@ export const Terminal: React.FC<Props> = () => {
     return [{ key: `heart-${i}`, x, y, opacity, scale }]
   })
 
+  const barGrowFrame = selectFrame + heartTravel
+  const orangeBarHeight = interpolate(
+    frame,
+    [barGrowFrame, barGrowFrame + 8, barGrowFrame + 14],
+    [50, 100, 90],
+    { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
+  )
+
   return (
     <AbsoluteFill
       name="Background"
@@ -243,7 +251,7 @@ export const Terminal: React.FC<Props> = () => {
               <g transform="translate(0, 100) scale(1, -1)">
                 <rect x="6" y="5" width="16" height="50" rx="7" fill="#0F9D58" />
                 <rect x="30" y="5" width="16" height="80" rx="7" fill="#4285F4" />
-                <rect x="54" y="5" width="16" height="90" rx="7" fill="#F4B400" />
+                <rect x="54" y="5" width="16" height={orangeBarHeight} rx="7" fill="#F4B400" />
                 <rect x="78" y="5" width="16" height="65" rx="7" fill="#EA4335" />
               </g>
             </svg>
