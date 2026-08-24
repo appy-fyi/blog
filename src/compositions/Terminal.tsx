@@ -1,7 +1,6 @@
 import {
   AbsoluteFill,
   CalculateMetadataFunction,
-  Composition,
   Interactive,
   interpolate,
   useCurrentFrame,
@@ -10,22 +9,8 @@ import {
 
 type Props = {}
 
-const calculateMetadata: CalculateMetadataFunction<Props> = () => {
+export const calculateMetadata: CalculateMetadataFunction<Props> = () => {
   return {}
-}
-
-export const MyComposition = () => {
-  return (
-    <Composition
-      id="Terminal"
-      component={Terminal}
-      durationInFrames={240}
-      fps={30}
-      width={1080}
-      height={1350}
-      calculateMetadata={calculateMetadata}
-    />
-  )
 }
 
 const HEART_PATTERN = [

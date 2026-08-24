@@ -2,6 +2,10 @@ This is a remotion based blog for https://appy.fyi
 The appy.fyi main project is at ~/Work/appy.fyi
 
 TODO:
+    - Outro:
+        - Create a simple outro where the google play icon morph into the appy.fyi logo (they have the same building blocks).
 Done:
     Create a simple static remotion animation of a terminal with the claude code logo (claude.svg)
     Animation: the user enters the command (suggestions disappear)
+    Multiple compositions: Prepare the project to support multiple compositions
+    Animation: Create a simple animation called GooglePlay: use play.svg, openai.svg and appy.svg to animate a snake shaped dotted pipeline (top-left -> center -> bottom-right) with data particles flowing through it and all logos animated
